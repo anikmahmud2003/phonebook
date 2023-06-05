@@ -1,0 +1,50 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  
+  h1 {
+    text-align: center;
+  }
+  
+  .add-entry {
+    margin-bottom: 20px;
+  }
+  
+  .add-entry form {
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    margin: auto;
+  }
+  
+  .add-entry label,
+  .add-entry input,
+  .add-entry textarea {
+    margin-bottom: 10px;
+  }
+  
+  .add-entry button {
+    width: 100px;
+    align-self: flex-end;
+  }
+  
+  .phonebook-entries {
+    max-width: 800px;
+    margin: auto;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  th {
+    background-color: #f2f2f2;
+  }
+  

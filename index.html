@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Phone Book</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+<body>
+    <h1>Phone Book</h1>
+
+    <div class="add-entry">
+        <h2>Add Entry</h2>
+        <form id="phonebook-form">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" name="phone" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="address">Address:</label>
+            <textarea id="address" name="address" required></textarea>
+
+            <button type="submit">Add</button>
+        </form>
+    </div>
+
+    <div class="phonebook-entries">
+        <h2>Phone Book Entries</h2>
+        <table id="entries-table">
+            <tr>
+                <th>Name</th>
+                <th>Phone Number</th>
+                <th>Email</th>
+                <th>Address</th>
+            </tr>
+        </table>
+    </div>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-analytics.js";
+        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyDt2-ct86kINsMJZ8opSCsgFC2i9lZLVek",
+            authDomain: "phonebook-3d426.firebaseapp.com",
+            projectId: "phonebook-3d426",
+            storageBucket: "phonebook-3d426.appspot.com",
+            messagingSenderId: "741820362070",
+            appId: "1:741820362070:web:b1733de5dad99b41b9faf7",
+            measurementId: "G-7F54KCCVWM"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getFirestore(app);
+
+        const phonebookForm = document.getElementById('phonebook-form');
+        const entriesTable = document.getElementById('entries-table');
+
+        // Function to add an entry to Firestore
+        const addEntry = async (name, phone, email, address) => {
+            try {
+                const docRef = await addDoc(collection(db, 'entries'), {
+                    name,
+                    phone,
+                    email,
+                    address
+                });
+                console.log('Entry added with ID: ', docRef.id);
+            } catch (error) {
+                console.error('Error adding entry: ', error);
+            }
+        };
+
+        // Event listener for form submission
+        phonebookForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+            const address = document.getElementById('address').value;
+            addEntry(name, phone, email, address);
+            phonebookForm.reset();
+        });
+
+        // Function to render entries from Firestore
+        const renderEntries = (entries) => {
+            entriesTable.innerHTML = `
+                <tr>
+                    <th>Name</th>
+                    <th>Phone Number</th>
+                    <th>Email</th>
+                    <th>Address</th>
+                </tr>
+            `;
+            entries.forEach((entry) => {
+                const { name, phone, email, address } = entry.data();
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${name}</td>
+                    <td>${phone}</td>
+                    <td>${email}</td>
+                    <td>${address}</td>
+                `;
+                entriesTable.appendChild(row);
+            });
+        };
+
+        // Function to get and render entries from Firestore
+        const getEntries = async () => {
+            try {
+                const querySnapshot = await getDocs(collection(db, 'entries'));
+                renderEntries(querySnapshot.docs);
+            } catch (error) {
+                console.error('Error getting entries: ', error);
+            }
+        };
+
+        // Initial rendering of entries
+        getEntries();
+    </script>
+
+
+</body>
+
+</html>
